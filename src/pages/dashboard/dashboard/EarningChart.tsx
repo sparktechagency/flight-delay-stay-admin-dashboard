@@ -18,7 +18,7 @@ const data = [
 
 const EarningChart = () => {
     return (
-        <div
+        <div className='bg-white drop-shadow-md  p-4 mx-2 rounded-2xl'
             style={{
                 display: 'flex',
                 flexDirection: 'column',

@@ -44,12 +44,12 @@ const Sidebar = () => {
                 },
                 components: {
                     Menu: {
-                        itemActiveBg: '#286a25',
+                        itemActiveBg: '#083A65',
                         itemSelectedColor: '#fff',
                         itemBorderRadius: '10px 10px 10px 10px' as any,
                         itemHeight: 45,
                         itemMarginBlock: 12,
-                        itemSelectedBg: '#286a25',
+                        itemSelectedBg: '#083A65',
                     },
                 },
             }}
@@ -63,13 +63,10 @@ const Sidebar = () => {
                 {/* logo of the website */}
                 <Link to="/">
                     <div
-                        style={{
-                            margin: '0 20px',
-                            padding: '20px 0',
-                        }}
-                        className=' flex items-center justify-center'
+             
+                        className=' flex items-center justify-center p-5 mt-5 pb-2'
                     >
-                        <img src="/logo.png" alt="" className=' w-[100px] h-[100px] ' />
+                        <img src="/logo.png" alt="" className=' w-[80px] h-[80px] ' />
                     </div>
                 </Link>
 

@@ -105,7 +105,7 @@ const handleDelete = (record: any) => {
                             borderRadius:10
                         }}
                         placeholder="Search"
-                        prefix={<FiSearch color="#286a25" size={20} />}
+                        prefix={<FiSearch color="#083A65" size={20} />}
                     />
 
 
