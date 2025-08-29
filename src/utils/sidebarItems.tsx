@@ -1,11 +1,10 @@
-import { BiCategory } from 'react-icons/bi';
 import { TSidebarItem } from './generateSidebarItems';
 import {  AiOutlineDollarCircle } from 'react-icons/ai';
 import { IoBarChartOutline } from 'react-icons/io5';
 import { TbLogout, TbMessage2Check } from 'react-icons/tb';
 import { HiOutlineUserGroup } from 'react-icons/hi2';
-import { CiViewList } from 'react-icons/ci'; 
 import { BsBuildingGear } from 'react-icons/bs';
+import { LuCrown } from 'react-icons/lu';
 
 const sidebarItems: TSidebarItem[] = [
     {
@@ -21,18 +20,6 @@ const sidebarItems: TSidebarItem[] = [
         icon: <HiOutlineUserGroup size={24} />,
     },
     {
-        key: 'services',
-        label: 'Services',
-        path: 'services',
-        icon: <CiViewList size={24} />,
-    },
-    {
-        key: 'create-class',
-        label: 'Create Class',
-        path: 'create-class',
-        icon: <BiCategory size={24} />,
-    },
-    {
         key: 'booking-history',
         label: 'Booking History',
         path: 'booking-history',
@@ -43,6 +30,12 @@ const sidebarItems: TSidebarItem[] = [
         label: 'Facilities',
         path: 'facilities',
         icon: <BsBuildingGear size={24} />,
+    },
+    {
+        key: 'subscription',
+        label: 'Subscription',
+        path: 'subscription',
+        icon: <LuCrown size={24} />,
     },
     {
         key: 'transactions',

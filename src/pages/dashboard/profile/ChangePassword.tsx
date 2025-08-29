@@ -43,7 +43,7 @@ const ChangePassword = () => {
 
                 <Form.Item className="flex justify-center">
                     <Button
-                        shape="round"
+                 
                         type="primary"
                         htmlType="submit"
                         style={{

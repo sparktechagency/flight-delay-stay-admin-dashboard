@@ -9,11 +9,10 @@ import VerifyOtp from '../pages/authentication/VerifyOtp';
 import NewPassword from '../pages/authentication/NewPassword';
 import Profile from '../pages/dashboard/profile/Profile';
 import Users from '../pages/dashboard/Users';
-import CreateClasses from '../pages/dashboard/CreateClasses';
-import Services from '../pages/dashboard/Services';
 import BookingHistory from '../pages/dashboard/BookingHistory';
 import Transactions from '../pages/dashboard/Transactions';
-import Companies from '../pages/dashboard/Companies';
+import Facilities from '../pages/dashboard/Facilities';
+import Subscription from '../pages/dashboard/Subscription';
 
 const router = createBrowserRouter([
     {
@@ -24,9 +23,8 @@ const router = createBrowserRouter([
             { path: '', element: <Dashboard /> },
             { path: 'users', element: <Users /> },
             { path: 'booking-history', element: <BookingHistory /> },
-            { path: 'services', element: <Services /> },
-            { path: 'create-class', element: <CreateClasses /> },
-            { path: 'companies', element: <Companies /> },
+            { path: 'subscription', element: <Subscription/> },
+            { path: 'facilities', element: <Facilities /> },
             { path: 'transactions', element: <Transactions /> },
             { path: 'notification', element: <Notification /> },
             { path: 'profile', element: <Profile /> },

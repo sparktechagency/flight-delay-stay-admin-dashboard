@@ -26,7 +26,7 @@ const VerifyOtp = () => {
             }}
         >
             <div className="flex  items-center justify-center h-screen" style={{
-            backgroundImage: `url('/auth.png')`,
+            backgroundImage: `url('/authBg.svg')`,
             backgroundSize: 'cover',
             backgroundPosition: 'top',
             backgroundRepeat: 'no-repeat',
