@@ -1,12 +1,57 @@
 import { Button, Checkbox, ConfigProvider, Form, FormProps, Input } from 'antd';
 import { FieldNamesType } from 'antd/es/cascader';
 import { Link, useNavigate } from 'react-router-dom';
+import { useLoginMutation } from '../../redux/apiSlices/authSlice';
+import { useEffect } from 'react';
+import Swal from 'sweetalert2';
 
+export type errorType = {
+    data: {
+        errorMessages: { message: string }[];
+        message: string;
+    };
+};
 const Login = () => {
+     const [login, { isSuccess, isError, data, error,}] = useLoginMutation()
     const navigate = useNavigate();
-    const onFinish: FormProps<FieldNamesType>['onFinish'] = (values) => {
-        console.log('Received values of form: ', values);
-        navigate('/');
+        useEffect(() => {
+        if (isSuccess) {
+            if (data) {
+                Swal.fire({
+                    title: "Login Successful",
+                    text: "Welcome to Admin Dashboard",
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {             
+                    
+                       
+                    localStorage.setItem("token", data.data?.token);
+                    navigate("/");
+                    window.location.reload();
+                });
+
+            }
+
+        }
+        if (isError) {
+            const errorMessage =
+                (error as errorType)?.data?.errorMessages
+                    ? (error as errorType)?.data?.errorMessages.map((msg: { message: string }) => msg?.message).join("\n")
+                    : (error as errorType)?.data?.message || "Something went wrong. Please try again.";
+            Swal.fire({
+                title: "Failed to Login",
+                text: errorMessage,
+                icon: "error",
+            });
+        }
+    }, [isSuccess, isError, error, data, navigate]);
+    const onFinish: FormProps<FieldNamesType>['onFinish'] = async(values) => {
+
+        
+        await login(values);
+
+        // navigate('/');
     };
 
     return (

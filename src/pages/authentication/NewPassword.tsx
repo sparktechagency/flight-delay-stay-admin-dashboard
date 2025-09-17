@@ -1,13 +1,53 @@
-import { Button, ConfigProvider, Form, FormProps, Input } from 'antd';
-import { FieldNamesType } from 'antd/es/cascader';
+import { Button, ConfigProvider, Form, Input } from 'antd';
 import { useNavigate } from 'react-router';
+import Swal from 'sweetalert2';
+import { errorType } from './Login';
+import { useResetPasswordMutation } from '../../redux/apiSlices/authSlice';
+import { useEffect } from 'react';
 
 const NewPassword = () => {
     const navigate = useNavigate();
-    const onFinish: FormProps<FieldNamesType>['onFinish'] = (values) => {
-        console.log('Received values of form: ', values);
-        navigate('/');
-    };
+    const searchParams = new URLSearchParams(window.location.search);
+    const token = searchParams.get("token");
+     const [resetPassword, { isError, isSuccess, error, data }] = useResetPasswordMutation()
+
+    useEffect(() => {
+        if (isSuccess) {
+            if (data) {
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    text: data?.message,
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    navigate("/login")
+                    window.location.reload();
+                });
+            }
+        }
+        if (isError) {
+            const errorMessage =
+                (error as errorType)?.data?.errorMessages
+                    ? (error as errorType)?.data?.errorMessages.map((msg: { message: string }) => msg?.message).join("\n")
+                    : (error as errorType)?.data?.message || "Something went wrong. Please try again."; 
+
+            Swal.fire({
+                text: errorMessage,
+                icon: "error",
+            });
+        }
+    }, [isSuccess, isError, error, data, navigate]);
+
+
+    const onFinish = async (values: { password: string, confirmPassword: string }) => {
+        await resetPassword({
+            token: token,
+            password: values.password,
+            confirmPassword: values.confirmPassword
+        })
+    }
+
 
     return (
         <ConfigProvider

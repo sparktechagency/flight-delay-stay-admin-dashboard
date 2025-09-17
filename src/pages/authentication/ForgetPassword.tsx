@@ -1,12 +1,38 @@
 import { Button, ConfigProvider, Form, FormProps, Input } from 'antd';
 import { FieldNamesType } from 'antd/es/cascader';
 import { useNavigate } from 'react-router';
+import { useForgetPasswordMutation } from '../../redux/apiSlices/authSlice';
+import { useEffect } from 'react';
+import { errorType } from './Login';
+import Swal from 'sweetalert2';
 
 const ForgetPassword = () => {
     const navigate = useNavigate();
-    const onFinish: FormProps<FieldNamesType>['onFinish'] = (values) => {
-        console.log('Received values of form: ', values);
-        navigate('/verify-otp');
+    const [forgetPassword,{isSuccess,error}]=useForgetPasswordMutation()
+
+    useEffect(() => {
+        if(isSuccess){
+            
+            navigate('/verify-otp')
+        }
+        else if(error){
+            const errorMessage =
+                (error as errorType)?.data?.errorMessages
+                    ? (error as errorType)?.data?.errorMessages.map((msg: { message: string }) => msg?.message).join("\n")
+                    : (error as errorType)?.data?.message || "Something went wrong. Please try again.";
+            Swal.fire({
+                title: "Failed to Login",
+                text: errorMessage,
+                icon: "error",
+                timer: 1500,
+                showConfirmButton: false
+            })
+        }
+    }, [isSuccess,error]);
+    const onFinish: FormProps<FieldNamesType>['onFinish'] = (values:any) => {
+        
+        forgetPassword(values);
+       localStorage.setItem('forgetEmail',JSON.stringify(values.email))
     };
 
     return (

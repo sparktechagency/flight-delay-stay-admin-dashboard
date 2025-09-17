@@ -1,5 +1,8 @@
 import { Select } from 'antd';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Legend, Bar } from 'recharts';
+import { IAnalatycs } from '../../../types/types';
+import { useGetAnalatysQuery } from '../../../redux/apiSlices/anlatycsSlice';
+import { useState } from 'react';
 const { Option } = Select;
 const UserChart = () => {
     interface UserData {
@@ -7,20 +10,11 @@ const UserChart = () => {
         totalUsers: number;
         newUsers: number; // Example for the secondary bar
     }
+    const [year, setYear] = useState(new Date().getFullYear().toString());
+    const { data } = useGetAnalatysQuery({year:year});
+    const anlatycs: IAnalatycs = data?.data
 
-    const data: UserData[] = [
-        { month: 'February', totalUsers: 120, newUsers: 30 },
-        { month: 'March', totalUsers: 200, newUsers: 45 },
-        { month: 'April', totalUsers: 150, newUsers: 40 },
-        { month: 'May', totalUsers: 220, newUsers: 50 },
-        { month: 'June', totalUsers: 180, newUsers: 35 },
-        { month: 'July', totalUsers: 300, newUsers: 70 },
-        { month: 'August', totalUsers: 250, newUsers: 60 },
-        { month: 'September', totalUsers: 270, newUsers: 80 },
-        { month: 'October', totalUsers: 320, newUsers: 90 },
-        { month: 'November', totalUsers: 280, newUsers: 75 },
-        { month: 'December', totalUsers: 350, newUsers: 100 },
-    ];
+    const datak: UserData[] = anlatycs?.monthlyData?.map((item) => ({ month: item.month, totalUsers: item.totalUsers, newUsers: item.newUsers })) || [];
 
     return (
         <div
@@ -32,7 +26,7 @@ const UserChart = () => {
         >
             <div className="px-2 flex items-center justify-between">
                 <h1 className="text-xl font-medium">Total Users Statistics</h1>
-                <Select defaultValue="2024" className="w-32 h-[40px]">
+                <Select defaultValue={new Date().getFullYear().toString()} onChange={(e) => setYear(e)} className="w-32 h-[40px]">
                     <Option value="2024">2024</Option>
                     <Option value="2025">2025</Option>
                     <Option value="2026">2026</Option>
@@ -43,7 +37,7 @@ const UserChart = () => {
                 </Select>
             </div>
             <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={data}>
+                <BarChart data={datak}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" />
                     <YAxis />
