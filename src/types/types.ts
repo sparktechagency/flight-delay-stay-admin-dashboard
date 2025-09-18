@@ -36,3 +36,49 @@ export interface IUser {
   updatedAt: string; // ISO string
   airlineVerification: string | null;
 }
+
+export interface IPagination {
+  total: number;
+  limit: number;
+  page: number;
+  totalPage: number;
+}
+
+export interface IFacility {
+  _id: string;
+  name: string;
+  logo: string;
+  createdAt: string; // ISO Date string
+  updatedAt: string; // ISO Date string
+}
+
+
+export interface IPackage {
+  _id: string;
+  title: string;
+  price: number;
+  billingCycle: string; // e.g. "add-on"
+  description: string;
+  features: string[];
+  active: boolean;
+  createdAt: string; // ISO Date string
+  updatedAt: string; // ISO Date string
+  __v: number;
+}
+
+export interface IReview {
+  _id: string;
+  hotel: string;
+  content: string;
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+    id: string;
+  };
+  rating: number;
+  isVisible: boolean;
+  createdAt: string; // ISO string
+  updatedAt: string; // ISO string
+  __v: number;
+}

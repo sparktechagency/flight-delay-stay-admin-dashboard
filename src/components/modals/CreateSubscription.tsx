@@ -1,18 +1,102 @@
-import { Form, Input, Modal } from 'antd';
+import { Button, Form, Input, Modal } from 'antd';
 import { useEffect } from 'react';
 import { CiCircleMinus } from 'react-icons/ci';
 import { FaCircleCheck } from 'react-icons/fa6';
 import { GoPlusCircle } from 'react-icons/go';
+import { useCreatePackageMutation, useEditPackageMutation } from '../../redux/apiSlices/packageSlice';
+import Swal from 'sweetalert2';
+import { IPackage } from '../../types/types';
 
-const CreateSubscription = ({ open, setOpen, items }: { open: boolean, setOpen: (open: boolean) => void, items: { packageName: string, price: number, description: string }|undefined }) => {
-
+const CreateSubscription = ({ open, setOpen, items }: { open: boolean, setOpen: (open: boolean) => void, items: IPackage | undefined }) => {
+    const [createPackage, { isLoading }]=useCreatePackageMutation()
+    const [updatePackage,{isLoading:updateLoading}]=useEditPackageMutation()
     const [form] = Form.useForm()
 
     useEffect(() => {
         if (items) {
-            form.setFieldsValue({ title: items?.packageName, price: items?.price, features: items?.description })
+            form.setFieldsValue({ title: items?.title, price: items?.price, features: items?.features, description: items?.description })
         }
     }, [items, form])
+
+
+    const onFinish =async (values: any) => {
+        const packagel:IPackage={
+            ...values,
+            billingCycle:"add-on",
+        }
+        
+        
+
+        if(!items){
+            const result =  await createPackage(packagel).unwrap()
+        
+
+        if(!result.error){
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Package has been updated',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                setOpen(false)
+                form.resetFields()
+            }).catch((error) => {
+                console.log(error)
+             
+            })
+        }
+        else{
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: result.error,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                setOpen(false)
+                form.resetFields()
+            }).catch((error) => {
+                console.log(error)
+             
+            })
+        }
+        }
+        else{
+            const result =  await updatePackage({data:packagel,id:items?._id}).unwrap()
+            if(!result.error){
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Package has been updated',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    setOpen(false)
+                    form.resetFields()
+                }).catch((error) => {
+                    console.log(error)
+                 
+                })
+            }
+            else{
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: result.error,
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    setOpen(false)
+                    form.resetFields()
+                }).catch((error) => {
+                    console.log(error)
+                 
+                })
+            }
+        }
+        
+    };
 
     return (
         <div>
@@ -34,7 +118,7 @@ const CreateSubscription = ({ open, setOpen, items }: { open: boolean, setOpen: 
                     >
                         {"Update Subscription"}
                     </h1>
-                    <Form layout="vertical" form={form} className='p-3 '>
+                    <Form layout="vertical" form={form} onFinish={onFinish} className='p-3 '>
                         <div>
                             <Form.Item
                                 name="title"
@@ -44,6 +128,7 @@ const CreateSubscription = ({ open, setOpen, items }: { open: boolean, setOpen: 
                                         message: "Please input Package Name",
                                     },
                                 ]}
+                                
                                 label={<p className="text-[#6D6D6D]"> Package Name</p>}
                             >
                                 <Input
@@ -61,6 +146,21 @@ const CreateSubscription = ({ open, setOpen, items }: { open: boolean, setOpen: 
                                     },
                                 ]}
                                 label={<p className="text-[#6D6D6D]"> Package Price</p>}
+                            >
+                                <Input
+                                    className="w-[100%] border outline-none px-3 py-[8px]"
+                                    type="text"
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                name="description"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Please input Package Price ",
+                                    },
+                                ]}
+                                label={<p className="text-[#6D6D6D]"> Package Description</p>}
                             >
                                 <Input
                                     className="w-[100%] border outline-none px-3 py-[8px]"
@@ -148,9 +248,9 @@ const CreateSubscription = ({ open, setOpen, items }: { open: boolean, setOpen: 
 
 
                         <Form.Item className="text-center mt-8">
-                            <button type="submit" className=' bg-primary text-white w-[120px] h-[42px] rounded-lg'>
+                            <Button onClick={()=> form.submit()} loading={isLoading || updateLoading} className=' bg-primary text-white w-[120px] h-[42px] rounded-lg'>
                                 Submit
-                            </button>
+                            </Button>
                         </Form.Item>
                     </Form>
                 </div>

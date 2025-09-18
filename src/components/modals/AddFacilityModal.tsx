@@ -1,6 +1,9 @@
 import { Button, Form, Input, Modal } from "antd";
-import { useState } from "react";
+import {useState } from "react";
 import { PiImageThin } from "react-icons/pi";
+import { useCreateFacilityMutation } from "../../redux/apiSlices/facilitySlice";
+import { errorType } from "../../pages/authentication/Login";
+import Swal from "sweetalert2";
 
 const AddFacilityModal = ({ isOpen, setIsOpen }: {
     isOpen: boolean;
@@ -10,7 +13,7 @@ const AddFacilityModal = ({ isOpen, setIsOpen }: {
     const [form] = Form.useForm();
     const [imgFile, setImgFile] = useState<File | null>(null);
     const [imageUrl, setImageUrl] = useState<string | undefined>();
-
+    const [createFacility, { isLoading,error}] = useCreateFacilityMutation();
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -19,8 +22,38 @@ const AddFacilityModal = ({ isOpen, setIsOpen }: {
         }
     };
 
-    const OnFinish = () => {
-        console.log(imgFile);
+    // useEffect(() => {
+        
+    // }, [isSuccess]);
+
+    const OnFinish = async () => {
+        const formData = new FormData();
+        formData.append("name", form.getFieldValue("name"));
+        if (imgFile) {
+            formData.append("image", imgFile);
+        }
+
+        const result=await createFacility(formData).unwrap();
+        
+        if (result) {
+            setIsOpen(false);
+            form.resetFields();
+            setImgFile(null);
+            setImageUrl(undefined);
+        }
+        if(error){
+            const errorMessage =
+                (error as errorType)?.data?.errorMessages
+                    ? (error as errorType)?.data?.errorMessages.map((msg: { message: string }) => msg?.message).join("\n")
+                    : (error as errorType)?.data?.message || "Something went wrong. Please try again.";
+            Swal.fire({
+                title: "Failed to Login",
+                text: errorMessage,
+                icon: "error",
+                timer: 1500,
+                showConfirmButton: false
+            })
+        }
     }
 
     return (
@@ -61,7 +94,7 @@ const AddFacilityModal = ({ isOpen, setIsOpen }: {
 
                 <Form.Item>
                     <div className="flex justify-end w-full mt-5">
-                        <Button type="primary" htmlType="submit" style={{ height: 40, width: "200px" }}>
+                        <Button type="primary" loading={isLoading} htmlType="submit" style={{ height: 40, width: "200px" }}>
                             Save
                         </Button>
                     </div>

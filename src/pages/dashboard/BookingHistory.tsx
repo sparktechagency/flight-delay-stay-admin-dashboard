@@ -1,95 +1,152 @@
-import { Table, Input, Select } from 'antd';
-import { Tag } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { SearchOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { Pagination, Table, Tag } from 'antd';
+import {  AiOutlineEye } from 'react-icons/ai';
 import CustomModal from '../../components/shared/CustomModal';
-import { ImInfo } from 'react-icons/im';
-import BookingDetailsModal from '../../components/modals/BookingDetailsModal';
-import { BookingHistoryType, bookingsData } from '../../data/bookingHistoryData';
+import ReviewForm from '../../components/modals/ReviewForm';
+import moment from 'moment';
+import { useState } from 'react';
+import {  useGetAllReviewsQuery, useUpdateReviewMutation } from '../../redux/apiSlices/reviewSlice';
+import { IReview } from '../../types/types';
 
-const { Option } = Select;
+const Review = () => {
+    const [viewReview, setViewReview] = useState(false);
+    const [page , setPage] = useState(1); 
+    const [reviewData , setReviewData] = useState()
+    const { data: allReviews, refetch } = useGetAllReviewsQuery({});
+    const [updateReview] = useUpdateReviewMutation();  
+    // const [deleteReview] = useDeleteReviewMutation();
 
+    //  const handleDelete = async (id: string) => {
+    //     Swal.fire({
+    //       title: "Are you sure?",
+    //       icon: "warning",
+    //       showCancelButton: true,
+    //       confirmButtonColor: "#3085d6",
+    //       cancelButtonColor: "#d33",
+    //       confirmButtonText: "Yes",
+    //       cancelButtonText: "No",
+    //     }).then(async (result) => {
+    //       if (result.isConfirmed) {
+    //         await deleteReview(id).then((res) => {
+    //           if (res?.data?.success) {
+    //             Swal.fire({
+    //               text: res?.data?.message,
+    //               icon: "success",
+    //               showConfirmButton: false,
+    //               timer: 1500,
+    //             }).then(() => {
+    //               refetch();
+    //             });
+    //           } else {
+    //             Swal.fire({
+    //               title: "Oops",
+    //               //@ts-ignore
+    //               text: res?.error?.data?.message,
+    //               icon: "error",
+    //               timer: 1500,
+    //               showConfirmButton: false,
+    //             });
+    //           }
+    
+    //         })
+    //       }
+    //     });
+    //   }; 
 
-const BookingHistory = () => {
-  const [showBookingDetails, setShowBookingDetails] = useState(false);
-  const [showDetails, setShowDetails] = useState<any | null>(null)
+    const handleToggleStatus = async (id: string) => {
 
-  const statusOptions = ["Completed", "Pending", "Canceled"];
+      // console.log(status,id);
+      
+        try {
+            await updateReview({ id}).then((res:any) => {
+                if (res?.data?.success) {
+                  // message.success(res?.data?.message);
+                   refetch();
+                } else {
+                  console.error("Failed to update status");
+                }
+            })
+           
+        } catch (err) {
+            console.error("Failed to update status", err);
+        }
+    };
 
-const columns: ColumnsType<BookingHistoryType> = [
-  { title: "S/N", dataIndex: "key", key: "key" },
-  { title: "Booking ID", dataIndex: "BookingId", key: "BookingId" },
-  { title: "Guest Name", dataIndex: "guestName", key: "guestName" },
-  { title: "Host Name", dataIndex: "hostName", key: "hostName" },
-  { title: "Guest Mail", dataIndex: "guestMail", key: "guestMail" },
-  { title: "Price ($)", dataIndex: "price", key: "price" },
-  { title: "Total Guests", dataIndex: "hostMail", key: "hostMail" },
-  { 
-    title: "Booking Status", 
-    dataIndex: "status", 
-    key: "status",
-    render: (status: string) => {
-      let color = "default";
-      if (status === "Completed") color = "green";
-      else if (status === "Pending") color = "orange";
-      else if (status === "Canceled") color = "red";
-      return <Tag color={color}>{status}</Tag>;
-    },
-  }, 
-   {
-      title: "Action",
-      key: "action",
-      render: (_, record) => (
-        <div className='flex items-center gap-4'>
-          <p onClick={() => { setShowDetails(record); setShowBookingDetails(true) }} className='cursor-pointer'> <ImInfo className='text-primary' size={20} /> </p>
-          <Select
-            defaultValue={record.status}
-            style={{ width: 120 }}
-            onChange={(value) => {
-              console.log("Updated status for:", record, "->", value);
-            }}
-            options={statusOptions.map(status => ({ label: status, value: status }))}
-          />
+    const data = (allReviews?.data as IReview[])?.map((item: any, index: number) => ({
+        ...item,
+        key: index + 1,
+        date: moment(item.createdAt).format('DD-MM-YYYY'),
+        userName:item?.user?.name,
+        email:item?.user?.email,
+        status: item?.isVisible,
+        Comment: item?.content
+
+    }))
+    const columns = [
+        { title: 'S.No', dataIndex: 'key', key: 'key' },
+        { title: 'Date', dataIndex: 'date', key: 'date' },
+        { title: "User's Name", dataIndex: 'userName', key: 'userName' },
+        { title: 'Email', dataIndex: 'email', key: 'email' },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (_: any, record: any) => (
+                <Tag
+                    color={record.status ? 'green' : 'volcano'}
+                    onClick={() => handleToggleStatus(record._id)}
+                    style={{ cursor: 'pointer' }}
+                >
+                    {record.status ? 'Active' : 'Inactive'}
+                </Tag>
+            ),
+        },
+        {
+            title: 'Actions',
+            key: 'action',
+            render: (_:any, record: any) => (
+                <div className="flex items-center gap-3">
+                    <button onClick={() =>{ setViewReview(true); setReviewData(record)}} className="text-primary">
+                        <AiOutlineEye size={24} />
+                    </button>
+                    {/* <button className="text-red-500" onClick={() => handleDelete(record?.id)}>
+                        <AiOutlineDelete size={24} />
+                    </button> */}
+                </div>
+            ),
+        },
+    ];
+
+    return (
+        <div className="">
+            <div className="my-3">
+                <h1 className="text-2xl text-primary font-semibold">Manage Reviews</h1>
+            </div>
+            <Table
+                columns={columns}
+                dataSource={data}
+                rowClassName="hover:bg-gray-100" 
+                pagination={false}
+            /> 
+
+            {
+                allReviews?.data?.pagination?.total >= 10 && (
+                    <Pagination
+                        current={page}
+                        total={allReviews?.data?.pagination?.total}
+                        onChange={(page) => setPage(page)}
+                    />
+                )
+            }
+            <CustomModal
+                body={<ReviewForm  reviewData={reviewData} />}
+                open={viewReview}
+                setOpen={setViewReview}
+                key={'review'}
+                title="Review"
+                width={532}
+            />
         </div>
-      ),
-    },
-];
-  return (
-    <div className="">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl text-[#083A65] font-semibold">Booking History</h1>
-        </div>
-        <div className="flex items-center gap-5 justify-end mb-5">
-          <Input
-            style={{
-              maxWidth: 300,
-              height: 42,
-            }}
-            placeholder="Search"
-            prefix={<SearchOutlined />}
-          />
-
-          {/* Dropdown Filter */}
-          <Select defaultValue="All" className="w-52 h-[42px]">
-            <Option value="All">All</Option>
-            <Option value="Completed">Completed</Option>
-            <Option value="Pending">Pending</Option>
-            <Option value="Canceled">Canceled</Option>
-          </Select>
-        </div>
-      </div>
-      <Table columns={columns} dataSource={bookingsData} rowClassName="hover:bg-gray-100" pagination={{ pageSize: 9 }} />
-      <CustomModal
-        open={showBookingDetails}
-        setOpen={setShowBookingDetails}
-        body={<BookingDetailsModal showDetails={showDetails} />}
-        key={'influencer-details'}
-        width={550}
-      />
-    </div>
-  );
+    );
 };
 
-export default BookingHistory;
+export default Review

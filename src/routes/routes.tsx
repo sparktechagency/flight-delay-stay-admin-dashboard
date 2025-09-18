@@ -13,16 +13,17 @@ import BookingHistory from '../pages/dashboard/BookingHistory';
 import Transactions from '../pages/dashboard/Transactions';
 import Facilities from '../pages/dashboard/Facilities';
 import Subscription from '../pages/dashboard/Subscription';
+import PrivateRoute from '../provider/PrivateRoutes';
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <App />,
+        element: <PrivateRoute> <App /> </PrivateRoute>,
         errorElement: <ErrorPage />,
         children: [
             { path: '', element: <Dashboard /> },
             { path: 'users', element: <Users /> },
-            { path: 'booking-history', element: <BookingHistory /> },
+            { path: 'reviews', element: <BookingHistory /> },
             { path: 'subscription', element: <Subscription/> },
             { path: 'facilities', element: <Facilities /> },
             { path: 'transactions', element: <Transactions /> },

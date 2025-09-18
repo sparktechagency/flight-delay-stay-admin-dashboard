@@ -1,5 +1,5 @@
 import { TSidebarItem } from './generateSidebarItems';
-import {  AiOutlineDollarCircle } from 'react-icons/ai';
+// import {  AiOutlineDollarCircle } from 'react-icons/ai';
 import { IoBarChartOutline } from 'react-icons/io5';
 import { TbLogout, TbMessage2Check } from 'react-icons/tb';
 import { HiOutlineUserGroup } from 'react-icons/hi2';
@@ -19,12 +19,7 @@ const sidebarItems: TSidebarItem[] = [
         path: 'users',
         icon: <HiOutlineUserGroup size={24} />,
     },
-    {
-        key: 'booking-history',
-        label: 'Booking History',
-        path: 'booking-history',
-        icon: <TbMessage2Check size={24} />,
-    },
+    
     {
         key: 'facilities',
         label: 'Facilities',
@@ -37,11 +32,17 @@ const sidebarItems: TSidebarItem[] = [
         path: 'subscription',
         icon: <LuCrown size={24} />,
     },
+    // {
+    //     key: 'transactions',
+    //     label: 'Transactions',
+    //     path: 'transactions',
+    //     icon: <AiOutlineDollarCircle size={24} />,
+    // },
     {
-        key: 'transactions',
-        label: 'Transactions',
-        path: 'transactions',
-        icon: <AiOutlineDollarCircle size={24} />,
+        key: 'booking-history',
+        label: 'User Reviews',
+        path: 'reviews',
+        icon: <TbMessage2Check size={24} />,
     },
     {
         key: 'logout',
@@ -49,6 +50,7 @@ const sidebarItems: TSidebarItem[] = [
         path: 'login',
         icon: <TbLogout size={24} />,
     },
+    
 ];
 
 export default sidebarItems;

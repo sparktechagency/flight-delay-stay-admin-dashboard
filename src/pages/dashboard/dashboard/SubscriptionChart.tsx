@@ -2,6 +2,7 @@ import { Select } from 'antd';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Legend, Bar } from 'recharts';
 import { IAnalatycs } from '../../../types/types';
 import { useGetAnalatysQuery } from '../../../redux/apiSlices/anlatycsSlice';
+import { useState } from 'react';
 const { Option } = Select;
 const SubscriptionChart = () => {
     interface UserData {
@@ -9,7 +10,8 @@ const SubscriptionChart = () => {
         totalSubscription: number;
         newSubscription: number; 
     }
-    const {data} = useGetAnalatysQuery({ });
+    const [year, setYear] = useState(new Date().getFullYear().toString());
+    const {data} = useGetAnalatysQuery({year:year});
     const anlatycs:IAnalatycs = data?.data
 
     const datak: UserData[] = anlatycs?.monthlyData?.map((item) => ({ month: item.month, totalSubscription: item.totalSubscriptions, newSubscription: item.newSubscriptions })) || [];
@@ -24,7 +26,7 @@ const SubscriptionChart = () => {
         >
             <div className="px-2 flex items-center justify-between">
                 <h1 className="text-xl font-medium">Total Subscriptions Statistics</h1>
-                <Select defaultValue={new Date().getFullYear().toString()} className="w-32 h-[40px]">
+                <Select defaultValue={new Date().getFullYear().toString()} onChange={(e) => setYear(e)} className="w-32 h-[40px]">
                     <Option value="2024">2024</Option>
                     <Option value="2025">2025</Option>
                     <Option value="2026">2026</Option>

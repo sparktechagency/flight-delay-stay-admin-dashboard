@@ -10,8 +10,9 @@ export const api = createApi({
         baseUrl: "http://10.10.7.72:5000/api/v1",
         headers: {
             Authorization: `Bearer ${token}`,
-          }
+          },
     }),
+    tagTypes: ["Facility","Package","Review"],
     endpoints: () => ({})
 });
 
