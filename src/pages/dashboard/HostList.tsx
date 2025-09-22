@@ -1,69 +1,26 @@
-import { Table, Input, Select } from 'antd';
+import { Table, Input } from 'antd';
 import { FiSearch } from 'react-icons/fi';
-import { useChangeStatusUserMutation, useGetUsersQuery } from '../../redux/apiSlices/userSlice';
+import {  useGetHostsQuery } from '../../redux/apiSlices/userSlice';
 import { queryParmasBuilder } from '../../utils/queryParmasBuilder';
 import { IPagination, IUser } from '../../types/types';
 import { imageUrl } from '../../redux/api/baseApi';
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
+import CustomModal from '../../components/shared/CustomModal';
+import HostEarningModal from '../../components/modals/HostEarningModal';
+import { CiCircleInfo } from 'react-icons/ci';
 // Sample data
 
-const Users = () => {
-
-
-// const data = [
-//   {
-//     key: '00001',
-//     name: 'Christine Brooks',
-//     image: 'https://randomuser.me/api/portraits/women/1.jpg',
-//     email: 'alma.lawson@example.com',
-//     location: 'San Francisco, CA',
-//   },
-//   {
-//     key: '00002',
-//     name: 'Rosie Pearson',
-//     image: 'https://randomuser.me/api/portraits/women/2.jpg',
-//     email: 'tim.jennings@example.com',
-//     location: 'Austin, TX',
-//   },
-//   {
-//     key: '00003',
-//     name: 'Darrell Caldwell',
-//     image: 'https://randomuser.me/api/portraits/men/3.jpg',
-//     email: 'debra.holt@example.com',
-//     location: 'Denver, CO',
-//   },
-//   {
-//     key: '00004',
-//     name: 'Gilbert Johnston',
-//     image: 'https://randomuser.me/api/portraits/men/4.jpg',
-//     email: 'kenzi.lawson@example.com',
-//     location: 'Seattle, WA',
-//   },
-//   {
-//     key: '00005',
-//     name: 'Alan Cain',
-//     image: 'https://randomuser.me/api/portraits/men/5.jpg',
-//     email: 'willie.jennings@example.com',
-//     location: 'New York, NY',
-//   },
-// ];
+const HostList = () => {
+const [open, setOpen] = useState(false);
+const [host, setHost] = useState<IUser | null>(null);
 const [searchQuery, setSearchQuery] = useState('');
 const [page, setPage] = useState(1);
-const {data,refetch}=useGetUsersQuery({query:queryParmasBuilder({page:page,limit:10,searchTerm:searchQuery})});
-const [changeStatus,{isSuccess}]=useChangeStatusUserMutation()
+const {data}=useGetHostsQuery({query:queryParmasBuilder({page:page,limit:10,searchTerm:searchQuery})});
 const users:IUser[] = data?.data?.data;
 
 const pagination:IPagination = data?.data?.pagination;
 
-useEffect(()=>{
-  if(isSuccess){
-    refetch();
-  }
-},[isSuccess])
 
-const handleDelete = async (record: IUser) => {
- await changeStatus({id:record._id});
-}; 
     // Column definitions
   const columns = [ 
     {
@@ -93,17 +50,15 @@ const handleDelete = async (record: IUser) => {
     key: 'address',
   },
   {
-    title: 'Action',
+    title: 'Earning',
     key: 'action',
     render: (_: any, record: any) => (
-      <Select
-        defaultValue={record.status=="active"?"active":"delete"}
-        onChange={()=>handleDelete(record)}
-        style={{ width: 120 }}
-      >
-        <Select.Option value="active">Active</Select.Option>
-        <Select.Option value="delete">Inactive</Select.Option>
-      </Select>
+      <button onClick={() => {
+        setOpen(true);
+        setHost(record);
+      }}>
+        <CiCircleInfo size={24} />
+      </button>
     ),
   },
 ]; 
@@ -129,6 +84,18 @@ const handleDelete = async (record: IUser) => {
 
                 </div>
             </div>
+            <CustomModal
+            body={
+                <HostEarningModal
+                user={host as any}
+                />
+            }
+            open={open}
+            setOpen={setOpen}
+            key={"hostEarning"}
+            title={"Host Earning"}
+            width={700}
+            />
             <Table columns={columns} dataSource={users} onChange={(e) => setPage(e.current||1)} pagination={{ pageSize: pagination?.limit,total:pagination?.total }} rowClassName="hover:bg-gray-100" />
 
            
@@ -136,4 +103,4 @@ const handleDelete = async (record: IUser) => {
     );
 };
 
-export default Users;
+export default HostList;

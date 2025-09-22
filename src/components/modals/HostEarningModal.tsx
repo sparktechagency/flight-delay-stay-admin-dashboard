@@ -1,8 +1,9 @@
 import { Select } from 'antd';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import { IAnalatycs } from '../../../types/types';
-import { useGetAnalatysQuery } from '../../../redux/apiSlices/anlatycsSlice';
+
 import { useState } from 'react';
+import { useGetHostAnalatycsQuery } from '../../redux/apiSlices/anlatycsSlice';
+import { IAnalatycs, IUser } from '../../types/types';
 const { Option } = Select;
 // const data = [
 //     { name: 'Jan', earnings: 8000 },
@@ -19,15 +20,17 @@ const { Option } = Select;
 //     { name: 'Dec', earnings: 17000 },
 // ];
 
-const EarningChart = () => {
+const HostEarningModal = ({user}:{user:IUser}) => {
+    ;
+    
     const [year, setYear] = useState(new Date().getFullYear().toString());
-    const {data}=useGetAnalatysQuery({year:year})
+    const {data}=useGetHostAnalatycsQuery({year:year,id:user?._id})
     const details:IAnalatycs = data?.data
     
     const datak = details?.monthlyData?.map((item) => ({ name: item.month, earnings: item.monthlyEarning })) || [];
     
     return (
-        <div className='bg-white drop-shadow-md  p-4 mx-2 rounded-2xl'
+        <div className='bg-white p-4 mx-2 rounded-2xl'
             style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -35,7 +38,9 @@ const EarningChart = () => {
             }}
         >
             <div className="px-2 flex items-center justify-between">
-                <h1 className="text-xl font-medium">Monthly Earning</h1>
+                <div>
+                    <div>Total Earnings : ${details?.totalEarning}</div>
+                </div>
                 <Select onChange={(e) => setYear(e)} defaultValue={new Date().getFullYear().toString()} className="w-32 h-[40px]">
                     <Option value="2024">2024</Option>
                     <Option value="2025">2025</Option>
@@ -65,4 +70,4 @@ const EarningChart = () => {
     );
 };
 
-export default EarningChart;
+export default HostEarningModal;

@@ -13,27 +13,36 @@ import BookingHistory from '../pages/dashboard/BookingHistory';
 import Transactions from '../pages/dashboard/Transactions';
 import Facilities from '../pages/dashboard/Facilities';
 import Subscription from '../pages/dashboard/Subscription';
+import PrivateRoute from '../provider/PrivateRoutes';
+import SubscriptionList from '../pages/dashboard/SubscriptionList';
+import HostList from '../pages/dashboard/HostList';
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <App />,
+        element: <PrivateRoute> <App /> </PrivateRoute>,
         errorElement: <ErrorPage />,
         children: [
             { path: '', element: <Dashboard /> },
             { path: 'users', element: <Users /> },
-            { path: 'booking-history', element: <BookingHistory /> },
+            { path: 'reviews', element: <BookingHistory /> },
             { path: 'subscription', element: <Subscription/> },
             { path: 'facilities', element: <Facilities /> },
             { path: 'transactions', element: <Transactions /> },
             { path: 'notification', element: <Notification /> },
             { path: 'profile', element: <Profile /> },
+             {path:"subscription-list",element:<SubscriptionList/>},
+            {
+                path:"hosts",
+                element:<HostList/>
+            }
         ],
     },
     { path: '/login', element: <Login /> },
     { path: '/forget-password', element: <ForgetPassword /> },
     { path: '/verify-otp', element: <VerifyOtp /> },
     { path: '/new-password', element: <NewPassword /> },
+   
 ]);
 
 export default router;
