@@ -10,7 +10,17 @@ const analatysSlice = api.injectEndpoints({
                 }
             },
         }),
+        getHostAnalatycs: builder.query({
+            query: ({id,year}:{year?:string,id:string}) => {
+               
+                
+                return {
+                    url: `/analytics/host/${year??new Date().getFullYear()}/${id}`,
+                    method: "GET",
+                }
+            },
+        }),
     }),
 });
 
-export const { useGetAnalatysQuery } = analatysSlice;
+export const { useGetAnalatysQuery, useGetHostAnalatycsQuery } = analatysSlice;

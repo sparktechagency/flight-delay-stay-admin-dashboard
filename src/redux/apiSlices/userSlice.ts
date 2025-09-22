@@ -19,6 +19,14 @@ const userSlice = api.injectEndpoints({
                 };
             },
         }),
+
+        getHosts: builder.query({
+            query: ({query}:{query?:string}) => {
+                return {
+                    url: "/user/host?"+query,
+                };
+            },
+        }),
     }),
 });
-export const {useGetUsersQuery, useChangeStatusUserMutation} = userSlice;
+export const {useGetUsersQuery, useChangeStatusUserMutation,useGetHostsQuery} = userSlice;

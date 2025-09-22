@@ -82,3 +82,17 @@ export interface IReview {
   updatedAt: string; // ISO string
   __v: number;
 }
+
+export interface INotification {
+  _id: string;
+  title: string;
+  refId: string;
+  path: string;
+  message: string;
+  seen: boolean;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  __v: number;
+  receiver: string;
+}
+

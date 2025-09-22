@@ -5,6 +5,8 @@ import { TbLogout, TbMessage2Check } from 'react-icons/tb';
 import { HiOutlineUserGroup } from 'react-icons/hi2';
 import { BsBuildingGear } from 'react-icons/bs';
 import { LuCrown } from 'react-icons/lu';
+import { PiUsersThreeDuotone } from 'react-icons/pi';
+import { RiUserStarLine } from 'react-icons/ri';
 
 const sidebarItems: TSidebarItem[] = [
     {
@@ -18,6 +20,12 @@ const sidebarItems: TSidebarItem[] = [
         label: 'User Management',
         path: 'users',
         icon: <HiOutlineUserGroup size={24} />,
+    },
+    {
+        key: 'hosts',
+        label: 'Host List',
+        path: 'hosts',
+        icon: <RiUserStarLine size={24} />,
     },
     
     {
@@ -43,6 +51,12 @@ const sidebarItems: TSidebarItem[] = [
         label: 'User Reviews',
         path: 'reviews',
         icon: <TbMessage2Check size={24} />,
+    },
+    {
+        key: 'subscription-list',
+        label: 'Subscription List',
+        path: 'subscription-list',
+        icon: <PiUsersThreeDuotone  size={24} />,
     },
     {
         key: 'logout',
