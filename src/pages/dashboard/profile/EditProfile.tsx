@@ -15,7 +15,7 @@ const EditProfile: React.FC = () => {
     const [imgFile, setImageFile] = useState<File | null>(null);
     const [updateProfile, { isLoading, isSuccess, isError, error, data }] = useUpdateProfileMutation();
 
-    console.log(user);
+  
     
 
     useEffect(() => {
@@ -24,7 +24,7 @@ const EditProfile: React.FC = () => {
                 name: user?.name,
                 email: user?.email,
             });
-            setImgURL(user?.image?.startsWith("http") ? user?.image : `${imageUrl}${user?.image}`)
+            setImgURL(user?.profilePic?.startsWith("http") ? user?.profilePic : `${imageUrl}${user?.profilePic}`)
         }
     }, [profileForm, user]);
 

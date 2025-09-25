@@ -3,7 +3,7 @@ import { useProfileQuery } from '../redux/apiSlices/authSlice';
 
 type User = {
   email: string;
-  image: string;
+  profilePic: string;
   name: string;
   password: string;
   role: "SUPER_ADMIN" | "ADMIN"; 
